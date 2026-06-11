@@ -11,6 +11,9 @@ vigilantpack run
 </br>
 
 GitHub: https://github.com/VigilantMLOps/vigilant-pack
+
+</br>
+
 PyPI: https://pypi.org/project/vigilantpack/0.1.0/
 
 </br>
