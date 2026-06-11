@@ -6,6 +6,27 @@ Deterministic startup runner for ML/LLM applications. Brings up Docker services,
 vigilantpack run
 ```
 
+
+</br>
+</br>
+
+GitHub: https://github.com/VigilantMLOps/vigilant-pack
+PyPI: https://pypi.org/project/vigilantpack/0.1.0/
+
+</br>
+</br>
+
+<img width="1495" height="837" alt="Screenshot 2026-06-11 at 5 58 46 PM" src="https://github.com/user-attachments/assets/a74ce7d9-2796-4f89-972d-4b3bf0f779ab" />
+
+
+</br>
+
+<img width="1408" height="768" alt="Gemini_Generated_Image_w72mxlw72mxlw72m" src="https://github.com/user-attachments/assets/505579d5-52f8-40c2-b4c4-0f41aeb68b96" />
+
+
+</br>
+</br>
+
 ## How it works
 
 VigilantPack reads a `vigilant.yaml` manifest and executes a 6-stage lifecycle:
