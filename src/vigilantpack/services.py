@@ -9,9 +9,11 @@ both modules are sub-executors that share the same result contract.
 """
 from __future__ import annotations
 
+import socket
 import subprocess
 import time
 from dataclasses import dataclass, field
+from urllib.parse import urlparse
 
 import httpx
 
@@ -56,9 +58,12 @@ def start(compose_file: str, service: str) -> StageResult:
 
 def poll_health(url: str, timeout: int) -> StageResult:
     """
-    Poll a health URL every 2 s until it returns < 500 or the timeout expires.
-    Returns success=True on the first healthy response.
+    Poll a health URL every 2 s until healthy or timeout expires.
+    Supports http/https (HTTP status < 500) and tcp:// (TCP connect).
     """
+    if urlparse(url).scheme == "tcp":
+        return _poll_tcp(url, timeout)
+
     deadline = time.monotonic() + timeout
     last_error = "no response yet"
 
@@ -74,6 +79,31 @@ def poll_health(url: str, timeout: int) -> StageResult:
     return StageResult(
         False, "hard",
         f"health check timed out after {timeout}s — {last_error}",
+        False, "transient",
+    )
+
+
+def _poll_tcp(url: str, timeout: int) -> StageResult:
+    parsed = urlparse(url)
+    host = parsed.hostname or "localhost"
+    port = parsed.port
+    if not port:
+        return StageResult(False, "hard", f"invalid TCP URL: {url}", False, "deterministic")
+
+    deadline = time.monotonic() + timeout
+    last_error = "no response yet"
+
+    while time.monotonic() < deadline:
+        try:
+            with socket.create_connection((host, port), timeout=2.0):
+                return StageResult(True, "hard", f"TCP {host}:{port} reachable", True)
+        except OSError as exc:
+            last_error = str(exc)
+        time.sleep(2)
+
+    return StageResult(
+        False, "hard",
+        f"TCP health check timed out after {timeout}s — {last_error}",
         False, "transient",
     )
 

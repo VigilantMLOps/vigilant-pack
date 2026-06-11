@@ -226,6 +226,9 @@ def _port_in_use(port: int) -> bool:
 
 
 def _url_responds(url: str) -> bool:
+    parsed = urlparse(url)
+    if parsed.scheme == "tcp":
+        return _port_in_use(parsed.port) if parsed.port else False
     import httpx
     try:
         resp = httpx.get(url, timeout=2.0)

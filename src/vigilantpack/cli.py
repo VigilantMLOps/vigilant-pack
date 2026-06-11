@@ -248,6 +248,19 @@ def _load_or_exit(path: str) -> dict:
 def _health_check(url: str) -> tuple[bool, str]:
     if not url:
         return False, "no URL configured"
+    from urllib.parse import urlparse
+    if urlparse(url).scheme == "tcp":
+        import socket
+        parsed = urlparse(url)
+        host = parsed.hostname or "localhost"
+        port = parsed.port
+        if not port:
+            return False, f"invalid TCP URL: {url}"
+        try:
+            with socket.create_connection((host, port), timeout=3.0):
+                return True, f"TCP reachable  ({url})"
+        except OSError:
+            return False, f"unreachable  ({url})"
     try:
         resp = httpx.get(url, timeout=3.0)
         return resp.status_code < 500, f"HTTP {resp.status_code}  ({url})"
