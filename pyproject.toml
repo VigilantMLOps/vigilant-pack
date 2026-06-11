@@ -6,6 +6,15 @@ build-backend = "hatchling.build"
 name = "vigilantpack"
 version = "0.1.0"
 description = "Deterministic ML/LLM application runtime"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Bara Alsedih", email = "baraalsedih@gmail.com" }]
+keywords = ["ml", "llm", "docker", "cli", "runtime"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 requires-python = ">=3.12"
 dependencies = [
     "click>=8.1",
